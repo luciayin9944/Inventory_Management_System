@@ -7,9 +7,10 @@ app = Flask(__name__)
 
 inventory = []
 
+#fetch data from openfoodfacts API
 def get_product_info(barcode):
     url = f"https://world.openfoodfacts.net/api/v2/product/{barcode}.json"
-    response = requests.get(url, auth=HTTPBasicAuth('off', 'off'))
+    response = requests.get(url, auth=HTTPBasicAuth('off', 'off')) #using staging environment
     data = response.json()
 
     if data.get("status") == 1:
@@ -18,19 +19,20 @@ def get_product_info(barcode):
             "barcode": barcode,
             "name": product.get("product_name", ""),
             "brand": product.get("brands", ""),
+            "countries": product.get("countries", ""),
             "ingredients_text": product.get("ingredients_text", ""),
             "price": product.get("price", "N/A")
         }
-    else:
+    else: # "status" == 0
          print("Product not found")
          return None
 
-
+#List inventory
 @app.route("/inventory", methods=['GET'])
 def get_inventory():
     return jsonify(inventory), 200
 
-
+#Add project
 @app.route("/inventory", methods=['POST'])
 def add_product():
     data = request.get_json()
@@ -46,7 +48,7 @@ def add_product():
     inventory.append(new_product)
     return jsonify(new_product), 201
 
-
+#Update project's price
 @app.route("/inventory/<barcode>", methods=['PATCH'])
 def update_product(barcode):
     data = request.get_json()
@@ -59,7 +61,7 @@ def update_product(barcode):
         
     return jsonify({"message": "Product not found"}), 404
 
-    
+ #Delete project   
 @app.route("/inventory/<barcode>", methods=['DELETE'])
 def delete_product(barcode):
     for product in inventory:

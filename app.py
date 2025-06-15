@@ -30,6 +30,7 @@ def get_product_info(barcode):
 def get_inventory():
     return jsonify(inventory), 200
 
+
 @app.route("/inventory", methods=['POST'])
 def add_product():
     data = request.get_json()
@@ -44,6 +45,7 @@ def add_product():
         return jsonify({"message": "Product not found"}), 404
     inventory.append(new_product)
     return jsonify(new_product), 201
+
 
 @app.route("/inventory/<barcode>", methods=['PATCH'])
 def update_product(barcode):

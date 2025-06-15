@@ -27,7 +27,6 @@ def add_item(args):
 def update_item(args):
     barcode = args.barcode
     price = float(args.price)
-
     response = requests.patch(f"{API_URL}/{barcode}", json={"price": price})
     if response.status_code == 200:
         print("Price updated:", response.json())
@@ -36,11 +35,11 @@ def update_item(args):
 
 def delete_item(args):
     barcode = args.barcode
-    response = requests.delete(API_URL, json={"barcode": barcode})
+    response = requests.delete(f"{API_URL}/{barcode}")
     if response.status_code == 204:
         print("Product deleted:", barcode)
     else:
-        print("Delete failed:")
+        print("Delete failed")
 
 
 
